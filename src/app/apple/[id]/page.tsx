@@ -20,6 +20,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { lookupApp } from "~/lib/app-store";
+import { parseAppleAppId } from "~/lib/parse-app-id";
 import regions from "~/lib/regions";
 import type { AppStoreApp } from "~/lib/types";
 
@@ -55,7 +56,10 @@ export default function Home() {
   return (
     <main className="container py-8">
       <header className="mb-8">
-        <Link href="/" className="text-sm text-muted-foreground hover:text-foreground mb-2 inline-block">
+        <Link
+          href="/"
+          className="text-sm text-muted-foreground hover:text-foreground mb-2 inline-block"
+        >
           &larr; Back to What Region
         </Link>
         <h1 className="text-3xl font-bold">Apple App Store</h1>
@@ -75,11 +79,14 @@ export default function Home() {
               name="appId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>App ID</FormLabel>
+                  <FormLabel>App ID or URL</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter App Store ID (e.g., 6743941366)"
+                      placeholder="Enter App ID or paste App Store URL"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(parseAppleAppId(e.target.value));
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

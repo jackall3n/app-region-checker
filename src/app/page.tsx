@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { parseAppleAppId } from "~/lib/parse-app-id";
 
 const platforms = [
   { value: "apple", label: "Apple App Store", emoji: "" },
@@ -88,9 +89,17 @@ export default function Home() {
                       <FormLabel className="sr-only">App ID</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter App ID (e.g., 6743941366)"
+                          placeholder="Enter App ID or paste App Store URL"
                           className="h-12 text-base"
                           {...field}
+                          onChange={(e) => {
+                            const platform = form.getValues("platform");
+                            const value =
+                              platform === "apple"
+                                ? parseAppleAppId(e.target.value)
+                                : e.target.value;
+                            field.onChange(value);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -105,8 +114,7 @@ export default function Home() {
             </Form>
 
             <p className="mt-4 text-sm text-muted-foreground">
-              Find the App ID in the App Store URL, e.g., apps.apple.com/app/id
-              <span className="font-mono text-foreground">6743941366</span>
+              Paste an App Store URL or enter the ID directly
             </p>
           </div>
         </div>
