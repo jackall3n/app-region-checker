@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "../lib/orpc.server";
-import Providers from "./providers";
 import { WebsiteJsonLd } from "~/components/json-ld";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,12 +16,12 @@ const geistMono = Geist_Mono({
 });
 
 const siteConfig = {
-  name: "App Region Checker",
+  name: "What Region",
   description:
-    "Check iOS and Mac App Store app availability across 170+ countries and regions. See pricing in local currencies and find where any app is available worldwide.",
-  url: "https://appregionchecker.com",
+    "Check app availability across 170+ countries and regions. See pricing in local currencies and find where any app is available worldwide.",
+  url: "https://whatregion.com",
   ogImage: "/og-image.png",
-  creator: "@appregionchecker",
+  creator: "@whatregion",
   keywords: [
     "App Store",
     "iOS app availability",
@@ -35,6 +35,8 @@ const siteConfig = {
     "app availability checker",
     "iTunes app search",
     "Apple app regions",
+    "what region",
+    "app availability",
   ],
 };
 

@@ -50,15 +50,16 @@ export function AppJsonLd({ app, pageUrl }: AppJsonLdProps) {
       priceCurrency: app.currency,
       availability: "https://schema.org/InStock",
     },
-    aggregateRating: app.userRatingCount > 0
-      ? {
-          "@type": "AggregateRating",
-          ratingValue: app.averageUserRating,
-          ratingCount: app.userRatingCount,
-          bestRating: 5,
-          worstRating: 1,
-        }
-      : undefined,
+    aggregateRating:
+      app.userRatingCount > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: app.averageUserRating,
+            ratingCount: app.userRatingCount,
+            bestRating: 5,
+            worstRating: 1,
+          }
+        : undefined,
     author: {
       "@type": "Organization",
       name: app.artistName,

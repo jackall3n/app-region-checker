@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "App Region Checker",
-    short_name: "Region Checker",
+    name: "What Region",
+    short_name: "What Region",
     description:
-      "Check iOS and Mac App Store app availability across 170+ countries and regions.",
+      "Check app availability across 170+ countries and regions. See pricing in local currencies worldwide.",
     start_url: "/",
     display: "standalone",
     background_color: "#0a0a0a",

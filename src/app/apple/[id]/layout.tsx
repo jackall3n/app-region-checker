@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { lookupApp } from "~/lib/app-store";
 import { AppJsonLd, BreadcrumbJsonLd } from "~/components/json-ld";
+import { lookupApp } from "~/lib/app-store";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -64,12 +64,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [app.artworkUrl512],
     },
     alternates: {
-      canonical: `/${id}`,
+      canonical: `/apple/${id}`,
     },
   };
 }
 
-const baseUrl = "https://appregionchecker.com";
+const baseUrl = "https://whatregion.com";
 
 export default async function AppLayout({ children, params }: Props) {
   const { id } = await params;
@@ -81,13 +81,14 @@ export default async function AppLayout({ children, params }: Props) {
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: baseUrl },
+          { name: "Apple App Store", url: `${baseUrl}/apple` },
           {
             name: app?.trackName ?? `App ${id}`,
-            url: `${baseUrl}/${id}`,
+            url: `${baseUrl}/apple/${id}`,
           },
         ]}
       />
-      {app && <AppJsonLd app={app} pageUrl={`${baseUrl}/${id}`} />}
+      {app && <AppJsonLd app={app} pageUrl={`${baseUrl}/apple/${id}`} />}
       {children}
     </>
   );

@@ -48,16 +48,19 @@ export default function Home() {
   const app = appInfo?.results?.[0];
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    router.push(`/${values.appId}`);
+    router.push(`/apple/${values.appId}`);
     queryClient.invalidateQueries();
   }
 
   return (
     <main className="container py-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">App Region Checker</h1>
+        <Link href="/" className="text-sm text-muted-foreground hover:text-foreground mb-2 inline-block">
+          &larr; Back to What Region
+        </Link>
+        <h1 className="text-3xl font-bold">Apple App Store</h1>
         <p className="text-muted-foreground mt-2">
-          Check App Store availability across 170+ countries and regions
+          Check availability across 170+ countries and regions
         </p>
       </header>
 
@@ -195,7 +198,9 @@ function RegionCard({
         </>
       )}
 
-      {!appId && isLoading && <span className="text-muted-foreground text-sm">...</span>}
+      {!appId && isLoading && (
+        <span className="text-muted-foreground text-sm">...</span>
+      )}
     </Container>
   );
 }
