@@ -11,12 +11,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { lookupApp } from "~/lib/app-store";
@@ -53,45 +53,64 @@ export default function Home() {
   }
 
   return (
-    <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-8">App Region Checker</h1>
+    <main className="container py-8">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold">App Region Checker</h1>
+        <p className="text-muted-foreground mt-2">
+          Check App Store availability across 170+ countries and regions
+        </p>
+      </header>
 
-      <Form {...form}>
-        <form
-          className="flex flex-col gap-4 max-w-md mb-8"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="appId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>App ID</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter App ID" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <section aria-label="App search" className="mb-8">
+        <Form {...form}>
+          <form
+            className="flex flex-col gap-4 max-w-md"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="appId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>App ID</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter App Store ID (e.g., 6743941366)"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button type="submit">Check Availability</Button>
-        </form>
-      </Form>
+            <Button type="submit">Check Availability</Button>
+          </form>
+        </Form>
+      </section>
 
-      {app && <AppInfoCard app={app} />}
+      {app && (
+        <article aria-label="App information">
+          <AppInfoCard app={app} />
+        </article>
+      )}
 
-      <div className="flex flex-col gap-2 max-w-md">
-        {Object.entries(regions).map(([continent, regions]) => (
-          <div key={continent} className="mb-4 space-y-3">
-            <h3 className="text-lg font-medium mb-2">{startCase(continent)}</h3>
-            {regions.map((region) => (
-              <RegionCard key={region.code} region={region} appId={appId} />
-            ))}
+      <section aria-label="Regional availability" className="max-w-md">
+        <h2 className="sr-only">Availability by Region</h2>
+        {Object.entries(regions).map(([continent, regionList]) => (
+          <div key={continent} className="mb-6">
+            <h3 className="text-lg font-medium mb-3">{startCase(continent)}</h3>
+            <ul className="space-y-2">
+              {regionList.map((region) => (
+                <li key={region.code}>
+                  <RegionCard region={region} appId={appId} />
+                </li>
+              ))}
+            </ul>
           </div>
         ))}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
 
@@ -100,21 +119,31 @@ function AppInfoCard({ app }: { app: AppStoreApp }) {
     <div className="flex gap-4 p-4 rounded-lg border bg-card max-w-md mb-8">
       <Image
         src={app.artworkUrl100}
-        alt={app.trackName}
+        alt={`${app.trackName} app icon`}
         width={80}
         height={80}
         className="rounded-xl"
+        priority
       />
       <div className="flex-1 min-w-0">
         <h2 className="font-semibold text-lg truncate">{app.trackName}</h2>
         <p className="text-sm text-muted-foreground truncate">
-          {app.artistName}
+          by {app.artistName}
         </p>
-        <div className="flex gap-3 mt-2 text-sm text-muted-foreground">
-          <span>{app.primaryGenreName}</span>
-          <span>{app.formattedPrice}</span>
-          <span>v{app.version}</span>
-        </div>
+        <dl className="flex gap-3 mt-2 text-sm text-muted-foreground">
+          <div>
+            <dt className="sr-only">Category</dt>
+            <dd>{app.primaryGenreName}</dd>
+          </div>
+          <div>
+            <dt className="sr-only">Price</dt>
+            <dd>{app.formattedPrice}</dd>
+          </div>
+          <div>
+            <dt className="sr-only">Version</dt>
+            <dd>v{app.version}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   );
@@ -133,19 +162,13 @@ function RegionCard({
     enabled: !!appId,
   });
 
-  if (!appId) {
-    return <span className="text-muted-foreground text-sm">-</span>;
-  }
-
-  if (isLoading) {
-    return <span className="text-muted-foreground text-sm">...</span>;
-  }
-
   const isAvailable = Boolean(data?.resultCount && data.resultCount > 0);
   const app = data?.results?.[0];
 
+  const Container = isAvailable ? Link : "div";
+
   return (
-    <Link
+    <Container
       target="_blank"
       rel="noopener noreferrer"
       href={`https://apps.apple.com/${region.code}/app/${appId}`}
@@ -153,18 +176,26 @@ function RegionCard({
     >
       <span className="text-xl">{region.emoji}</span>
       <div className="font-medium">{region.name}</div>
-      <IconExternalLink className="w-4 h-4" />
 
-      <div className="flex items-center gap-2 ml-auto">
-        {isAvailable && app && (
-          <span className="text-sm text-muted-foreground">
-            {app.formattedPrice}
-          </span>
-        )}
-        <span className={isAvailable ? "text-green-600" : "text-red-500"}>
-          {isAvailable ? "✓" : "✗"}
-        </span>
-      </div>
-    </Link>
+      {appId && (
+        <>
+          <IconExternalLink className="w-4 h-4" />
+
+          <div className="flex items-center gap-2 ml-auto">
+            {isAvailable && app && (
+              <span className="text-sm text-muted-foreground">
+                {app.formattedPrice}
+              </span>
+            )}
+
+            <span className={isAvailable ? "text-green-600" : "text-red-500"}>
+              {isAvailable ? "✓" : "✗"}
+            </span>
+          </div>
+        </>
+      )}
+
+      {!appId && isLoading && <span className="text-muted-foreground text-sm">...</span>}
+    </Container>
   );
 }
